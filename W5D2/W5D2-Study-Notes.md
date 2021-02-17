@@ -91,13 +91,13 @@ Other column attributes:
       - `%` replaces **zero** or more characters
       - `_` replaces exactly one characters
 - code samples
-  ``` 
+  ```sql
   SELECT * 
   FROM table_name
   WHERE column_name = value
   ``` 
 
-  ``` 
+  ```sql
   SELECT name 
   FROM instructors
   WHERE name LIKE 'M%'
@@ -135,7 +135,7 @@ Other column attributes:
 - **[caveat] Any column we `SELECT` must be in our `GROUP BY`**
   - cannot `SELECT name` and `GROUP BY type`
 - Aggregation functions in `SELECT` will apply to the invidivual groups 
-  ``` 
+  ```sql
   SELECT
     type, COUNT(id) AS num_of_items
   FROM
@@ -163,7 +163,7 @@ Other column attributes:
   7. `ORDER BY`
   8. `OFFSET`/`LIMIT`
 
-  ```
+  ```sql
   SELECT
     type, COUNT(*) AS count
   FROM
@@ -198,7 +198,7 @@ Use the result of a query inside another query
   - one-to-many(hierarchical)
   - many-to-may (horizontal)
 - Double Joins
-  ```
+  ```sql
   SELECT
     *
   FROM
@@ -226,7 +226,7 @@ Use the result of a query inside another query
 - Joins a table back agains itself
   - **[caveat] Must alias the table names using descriptive aliases** 
 
-  ```
+  ```sql
   SELECT
     col_name
   FROM
