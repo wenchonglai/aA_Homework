@@ -7,8 +7,6 @@
   - a way to represent SQL data in other programming langugage 
 - Allows us to:
   - represent models and their data
-    - an ApplicationRecord user class is a table
-    - an instance of that user class is a row
   - represent associations between data
   - validate models before they get persisted to the database
   - perform database operations (***CRUD (create-read-update-destroy)***) in OOP fashion
@@ -20,7 +18,7 @@
 - **```gem install rails -v 'x.y.z'```**
 
 ### Create a new Rails project
-1. **`rails _x.y.z_ new project_name -G --database=postgresql`**
+1. **`rails _x.y.z_ new project_name -G -d postgresql`**
   - **```-G```** : avoid creating a Github repo
   - **```--database=postgresql```** : use Postgres as the database
     - correct gems will be added
@@ -141,17 +139,36 @@
     2. edit the migration
     3. run `rails db:migrate` again
 ---
-## Validations
-- validations vs. constraints
+## Model
+- the M of the MVC Pattern
+- a class that represents and directly manages the data, logic, and rules for a table
+  - typically contains: ***validations***, ***associations***, custom methods
+  - inherits from ApplicationRecord < ActiveRecord
+- **one-to-one** correspondence between a model and a table
+  - a model class is a table
+  - an instance of that model class is a row in the table
+---
+## Validations vs. constraints
+- **BOTH are necessary**
+- comparisons
+
   || ***Validations*** | ***Constraints*** |
   |---| --- | --- |
   |Definition| in ***models*** | in ***migrations*** |
   |Usage| in Ruby | in database |
   |Samples| | `NOT NULL`, `FOREIGN KEY` |
+  |null prevention|`presence: true`|`null: false`|
+  |unique values|`uniqueness: true`|`unique: true`|
+  ||best used to provide error msgs to users interacting with the app|last line of defence|
+
+## Validation
+- annotating models
+  - `bundle exec annotate --models`
 - `#valid`
   - When `#save` or `#save!` is called, ActiveRecord calls the `#valid?` method.
 - errors
   - use the `#errors` method after `#valid?`, `save`, or `save!` to inspect errors
+  - `instance.errors` - shows all active errors pertaining to that instance
 - syntax
   ```ruby
   class A < ApplicationRecord
@@ -187,8 +204,9 @@
   - define custom private method in the model class and use that method in `validate:`
   - syntax
     ```ruby
-    validates: col_name, validation_method, **options
+    validate: col_name, validation_method, **options
     ```
+  - ***[caveat] for custom validations, it is `validate`, NOT `validates`!!!***
   - code sameple
     ```ruby
     class Noun < ApplicationRecord
@@ -204,7 +222,7 @@
     class ColumnNameValidator < ActiveModel::EachValidator
       def validate_each(record, col_name, value)
         #calls EachValidator#options to access custom message
-        message = options[:message] || 'detault message'
+        message = options[:message] || 'default message'
         record.errors[:col_name] << message
       end
     end
@@ -216,8 +234,13 @@
 
 ### Validation Options
 - `:allow_nil`
+- `:allow`
 ---
 ## Associations
+- Connections between two ActiveRecord models
+- Makes common opeartions simpler and easier
+- avoids using SQL `JOIN` statements
+- creates simple methods
 
 ### `belongs_to` and `has_many`
 - ***macro***: a class method that defines a instance method  
@@ -225,24 +248,23 @@
 - syntax
   - `has_many(method_name_nouns, option_hash)`
   - `belongs_to(method_name_noun, option_hash)`
-- **[caveat] if A has many Bs and B belongs to As, the `primary_key` for both A's and B's macros are the id of A**
-- **[caveat] validation of `presence: true` automatically runs for instances with `belongs_to` associations!**
-  - [getaround] add `optional: true` to the `belongs_to` macro
+- **[caveat] if A has many Bs and B belongs to As, the `primary_key` for both A's and B's macros are ALWAYS the id of A**
+  - the class with `belongs_to` contains the foreign key
+- **[caveat] validation of `presence: true` automatically runs for the foreign key of an instance with `belongs_to` association!**
+  - [get-around] add `optional: true` to the `belongs_to` macro
 - Code Sample
   ```ruby
   class Noun1
-    belongs_to(
-      :noun2, # reference method name
+    belongs_to( :noun2, # reference method name
       className: 'Noun2',
       foreign_key: :prim_key_in_noun2,  # the noun2_id of noun1 instances
-      primary_key: :prim_key_in_n1,     # the id of noun2 instances
+      primary_key: :prim_key_in_n1,     # the id of noun2 instances (omittable)
       optional: true                    # (if desired)
     )
   end
 
   class Noun2
-    has_many(
-      :noun1s, # reference method name
+    has_many( :noun1s, # reference method name
       className: 'Noun1',
       foreign_key: :noun2_id,           # the noun2_id of noun1 instances
       primary_key: :id                  # the id of noun2 instances
@@ -256,31 +278,40 @@
   ```
 
 ### `has_many :through`
-- **`[caveat]` this is different from the typical `has_may`**
+- `add_index(table_name, [:col_name1, :col_name2], {unique:true})`
+  - add a unique constraints on two columns to ensure there cannot a same set of values
+- **`[caveat]` this is different from the typical `has_many`**
 - syntax
   ```ruby
   class A
-    has_many(
-      :bs,
+    has_many( :bs,
       { class_name: 'B', foreign_key: :a_id, primary_key: :id }
     )
-    has_many :cs, through: :bs, source: :c 
+    has_many(:cs, {
+      through: :bs, #instance method in A
+      source: :c    #intance method in B
+    })
   end
 
   class B
-    belongs_to(
-      :a,
+    # make sure to validate the uniqueness of a_id and b_id
+    validates(:a_id, {
+      uniqueness: {
+        # a_id must be unique with the given b_id
+        scope: :b_id,
+        message: 'error message'
+      }
+    })
+    belongs_to( :a,
       { class_name: 'A', foreign_key: :a_id, primary_key: :id }
     )
-    belongs_to(
-      :c,
+    belongs_to( :c,
       { class_name: 'C', foreign_key: :c_id, primary_key: :id }
     )
   end
 
   class C
-    has_many(
-      :bs,
+    has_many( :bs,
       { class_name: 'B', foreign_key: :c_id, primary_key: :id }
     )
     has_many :as, through: :bs, source: :a
