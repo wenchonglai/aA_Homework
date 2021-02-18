@@ -147,6 +147,10 @@
 - **one-to-one** correspondence between a model and a table
   - a model class is a table
   - an instance of that model class is a row in the table
+
+### generate a model
+- [trick] **`bundle exec rails g model {ModelName}`**
+  - sets up BOTH model file and the migration file
 ---
 ## Validations vs. constraints
 - **BOTH are necessary**
@@ -281,6 +285,8 @@
 - `add_index(table_name, [:col_name1, :col_name2], {unique:true})`
   - add a unique constraints on two columns to ensure there cannot a same set of values
 - **`[caveat]` this is different from the typical `has_many`**
+- **`[caveat]` make sure to validate the uniqueness of the foreign keys in the intermediate class!!!**
+- [note]: there can be more than one through classes
 - syntax
   ```ruby
   class A
@@ -317,6 +323,9 @@
     has_many :as, through: :bs, source: :a
   end
   ```
+### has_one
+- easily confused with `belongs_to`
+- only wrte them if the corresponding belong_to is made
 
 ### ***Reflexive Associations***
 - code sample
