@@ -1,11 +1,26 @@
 # Rails Active Record
+### What is Rails?
+- a ***server-side MVC (Model-View-Controller) web-application framework***
+
+### ActiveRecord - an ***ORM*** Framework (the M in MVC)
+- ***ORM - Object Relational Mapping***
+  - a way to represent SQL data in other programming langugage 
+- Allows us to:
+  - represent models and their data
+    - an ApplicationRecord user class is a table
+    - an instance of that user class is a row
+  - represent associations between data
+  - validate models before they get persisted to the database
+  - perform database operations (***CRUD (create-read-update-destroy)***) in OOP fashion
+
+---
 ## Initializing Rails with Postgres
 
 ### Install Rails
 - **```gem install rails -v 'x.y.z'```**
 
 ### Create a new Rails project
-1. **`rails new project_name -G --database=postgresql`**
+1. **`rails _x.y.z_ new project_name -G --database=postgresql`**
   - **```-G```** : avoid creating a Github repo
   - **```--database=postgresql```** : use Postgres as the database
     - correct gems will be added
@@ -16,6 +31,8 @@
     - `gem 'byebug`
     - `gem 'pry-rails'`: interactive Ruby environment
 3. run **`bundle install`**
+
+- [trick] ***fuzzy typing*** use `cmd + P` and type the file name to access the actual file
 
 ---
 ### Switch from SQLite to Postgres
@@ -38,7 +55,12 @@
         ```
 ---
 
-## Migration
+## Migrations
+
+### Overview
+- *Incremental* and *reversable* changes made to a ***database schema***, allowing for evolution over time
+- Ubiquitous to app frameworks that work with relational DBs
+- Rail allows for easier Ruby ***DSL (domain-specific language)*** to describe changes to tables
 
 ### Setup Database
 - run **`bundle exec rails db:create`**
@@ -46,7 +68,14 @@
   - the production database will be created when publishing to a website
 
 ### Generate Migration
-- run `$rails generate migration DoSomethings`
+
+- run `$bundle exec rails g migration Action`
+  - ***[caveat] ALWAYS use `bundle exec` so that it is using the correct version of Rails***
+  - Action naming convention
+    - `Create{TableNouns}`
+    - `Add{ColumnName}To{TableNouns}`
+    - `Remove{ColumnName}From{TableNouns}`
+    - `AddIndexTo{TableNouns}`
   - generates an empty migration Ruby file with with a timestamp in **`./db/migrate`**
 
 ### Migration Commands
@@ -54,30 +83,40 @@
   - `create_table(name, options/&prc)`
     - Code Sample
       ```ruby
-      create_table :nouns do |t|
-        t.string :col_1_name, # null: false, default: value,
-        t.float :col_2_name #, null: false, default: value
+      create_table :table_nouns do |t|
+        #the database constraints option hash is optional, but HIGHLY RECOMMENDED
+        t.string :col_1_name, {null: false, default: value}, 
+        t.float :col_2_name, {null: false, default: value},
+        ...
+        t.timestamps # keeps track of when a piece of data is created
       end
       ```
   - `drop_table(name, options)`
   - `rename_table(name_old, name_new)`
 
 - column-related
-  - `add_column(table_name, col_name, type, options)`
-  - `change_column(table_name, col_name, type, options)`
+  - `add_column(table_name, col_name, data_type, options)`
+  - `change_column(table_name, col_name, data_type, options)`
   - `revome_column(table_name, col_names)`
   - `rename_column(table_name, name_old, name_new)`
+- index-related
+  - `add_index(table_name, :col_name, options)`
+    - add index to a column to **speed up querying** 
+    - ***[caveat] ALWAYS add index to foreign keys!***
+    - ***[caveat] also think about whether a foreign key is unique***
+      - if it is unique, include `unique: true` in the option hash
+  - `remove_index`
 
 ### Column Datatypes
 - Basic
-  - string
-  - text
-  - integer
-  - float
-  - datatime/timestamp
-  - data/time
-  - binary
-  - Boolean
+  - `string` (0-255 characters)
+  - `text`  (any characters)
+  - `integer`
+  - `float`
+  - `datatime`/`timestamps`
+  - `data`/`time`
+  - `binary`
+  - `Boolean`
 - Column Options
   - limit (i.e. `:limit => 50`)
   - default (i.e. `:default => 'Null'`)
@@ -88,7 +127,95 @@
 - **`bundle exec rails db:migrate`**
   - executes run for all pending migrations not previously run
   - File **`schema_migrations`** stores the timestamp of each run migration as a record
+- **`bundle exec rails db:migrate:status`**
+  - check migration status
 
+### Changing existing Migrations
+- ***[caveat] DO NOT delete any migration files!!!***
+- two options
+  - write a new migration (much preferred)
+  - rollback:
+    
+    ***[caveat] Very Dangerous While Working with Others!!!***
+    1. rollback the migration (via `rails db:rollback`)
+    2. edit the migration
+    3. run `rails db:migrate` again
+---
+## Validations
+- validations vs. constraints
+  || ***Validations*** | ***Constraints*** |
+  |---| --- | --- |
+  |Definition| in ***models*** | in ***migrations*** |
+  |Usage| in Ruby | in database |
+  |Samples| | `NOT NULL`, `FOREIGN KEY` |
+- `#valid`
+  - When `#save` or `#save!` is called, ActiveRecord calls the `#valid?` method.
+- errors
+  - use the `#errors` method after `#valid?`, `save`, or `save!` to inspect errors
+- syntax
+  ```ruby
+  class A < ApplicationRecord
+    validates :col_name_1, :col_name_2, ..., 
+      { validator_1: val, validator_2: val, ... }
+  end
+  ```
+
+### Built-in Validators
+- `presence`
+  - calls `#blank?` to validate the specified attributes are not empty
+- `uniqueness`
+  - validates the attribute's value is unique
+  - can take a hash as the value:
+    ```ruby
+    class A < ApplicationRecord
+      validates :col_name, uniqueness: {
+        scope: :year,
+        message: 'validates the uniqueness of col_name for a single year'
+      }
+    end
+    ```
+- other
+  - `format` - whether a string matches regexp
+  - `length` - whether a string/array has appropriate length
+    - `length: {minimum: , maximum}`
+  - `numericality: {greater_than/greater_than_or_equal_to, less_than/less_than_or_equal_to}`
+  - `inclusion: {in: }`
+- **[caveat] classes with `belongs_to` macro(s) are automatically validated. To remove this feature, add `optional true` in the `belongs_to` macro**
+
+### Custom Validations
+- Custom Methods
+  - define custom private method in the model class and use that method in `validate:`
+  - syntax
+    ```ruby
+    validates: col_name, validation_method, **options
+    ```
+  - code sameple
+    ```ruby
+    class Noun < ApplicationRecord
+      def validation_method
+        errors[:col_name] << 'message' unless ...
+      end
+    end
+    ```
+- Custom ***Validators***
+  - use when the same validation logic needs to be reused
+  - code sample
+    ```ruby
+    class ColumnNameValidator < ActiveModel::EachValidator
+      def validate_each(record, col_name, value)
+        #calls EachValidator#options to access custom message
+        message = options[:message] || 'detault message'
+        record.errors[:col_name] << message
+      end
+    end
+
+    class Noun < ApplicationRecord
+      validates: :column_name, column_name: true
+    end
+    ```
+
+### Validation Options
+- `:allow_nil`
 ---
 ## Associations
 
@@ -99,6 +226,8 @@
   - `has_many(method_name_nouns, option_hash)`
   - `belongs_to(method_name_noun, option_hash)`
 - **[caveat] if A has many Bs and B belongs to As, the `primary_key` for both A's and B's macros are the id of A**
+- **[caveat] validation of `presence: true` automatically runs for instances with `belongs_to` associations!**
+  - [getaround] add `optional: true` to the `belongs_to` macro
 - Code Sample
   ```ruby
   class Noun1
@@ -106,7 +235,8 @@
       :noun2, # reference method name
       className: 'Noun2',
       foreign_key: :prim_key_in_noun2,  # the noun2_id of noun1 instances
-      primary_key: :prim_key_in_n1      # the id of noun2 instances
+      primary_key: :prim_key_in_n1,     # the id of noun2 instances
+      optional: true                    # (if desired)
     )
   end
 
@@ -196,10 +326,3 @@
     )
   ```
 ---
-## Validations
-- validations vs. constraints
-  || ***Validations*** | ***Constraints*** |
-  |---| --- | --- |
-  |Definition| in ***models*** | in ***migrations*** |
-  |Usage| in Ruby | in database |
-  |Samples| | `NOT NULL`, `FOREIGN KEY` |
