@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: drivers
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  bus_id     :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  name: MyString
+  bus_id: 1
+
+two:
+  name: MyString
+  bus_id: 1

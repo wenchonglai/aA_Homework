@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: buses
+#
+#  id         :bigint           not null, primary key
+#  model      :string           not null
+#  route_id   :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  model: MyString
+  route_id: 1
+
+two:
+  model: MyString
+  route_id: 1
