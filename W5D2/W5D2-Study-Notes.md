@@ -130,10 +130,18 @@ Other column attributes:
 - `COUNT`, `SUM`, `AVG`, `MIN`/`MAX`, and more
 
 ### GROUP BY
-- `GROUP BY` groups rows with matching values for given column
+- `GROUP BY` groups rows with matching values for the given column
   - collapses each group of rows into a single row
-- **[caveat] Any column we `SELECT` must be in our `GROUP BY`**
-  - cannot `SELECT name` and `GROUP BY type`
+- **[caveat] `SELECT` and `GROUP BY`**
+  - When 
+    1.  `GROUP BY` is present, **OR**: 
+    2.  any aggregate functions are present:
+    
+    `SELECT` cannot refer to `col_name_1` that is not specified in `GROUP BY`, EXCEPT when:
+    1.  `col_name_1` is within an aggregate function, **OR**:
+    2.  there exists a ***functional dependency*** - if `col_name` in `GROUP BY` is the **primary key** of the table containing `col_name_1`
+    
+    Otherwise, more than one value could persist in the `col_name_1` column after grouping, which leads to an error.
 - Aggregation functions in `SELECT` will apply to the invidivual groups 
   ```sql
   SELECT

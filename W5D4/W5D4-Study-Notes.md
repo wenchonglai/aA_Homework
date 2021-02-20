@@ -64,6 +64,8 @@
 - run **`bundle exec rails db:create`**
   - create development and test databases
   - the production database will be created when publishing to a website
+- Drop Database
+  - run **`bundle exec rails db:drop`**
 
 ### Generate Migration
 
@@ -151,6 +153,7 @@
 ### generate a model
 - [trick] **`bundle exec rails g model {ModelName}`**
   - sets up BOTH model file and the migration file
+
 ---
 ## Validations vs. constraints
 - **BOTH are necessary**
