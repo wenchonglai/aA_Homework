@@ -255,6 +255,16 @@
 - syntax
   - `has_many(method_name_nouns, option_hash)`
   - `belongs_to(method_name_noun, option_hash)`
+    - syntatic sugar
+      ```ruby
+      belongs_to :noun,
+        foreign_key: :noun_id,
+        class_name: :Noun
+      
+      # equals to
+
+      belongs_to :noun
+      ```
 - **[caveat] if A has many Bs and B belongs to As, the `primary_key` for both A's and B's macros are ALWAYS the id of A**
   - the class with `belongs_to` contains the foreign key
 - **[caveat] validation of `presence: true` automatically runs for the foreign key of an instance with `belongs_to` association!**
