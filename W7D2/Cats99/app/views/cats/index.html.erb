@@ -1,0 +1,19 @@
+<h2> Popular Cats in United States </h2>
+<ul>
+  <% @cats.each do |cat| %>
+    <li>
+      <%= render 'cat', cat: cat %>
+    </li>
+  <% end %>
+</ul>
+
+<h2> Most Viewed Cats in United States </h2>
+
+<h2> Recommended for You </h2>
+
+<h2> Recently Featured Cats </h2>
+
+<%= content_for :footer do %>
+  <p>purrhub.com 2021</p>
+  <p>all cans reserved</p>
+<% end %>

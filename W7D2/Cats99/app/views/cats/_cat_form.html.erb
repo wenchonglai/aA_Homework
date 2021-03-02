@@ -1,0 +1,84 @@
+<% url = action == 'POST' ? cats_url : cat_url(cat.id) %>
+<% verb = action == 'POST' ? 'Create' : 'Edit' %>
+
+<form action="<%=url %>" method="POST">
+
+  <% if action == "PATCH" %>
+    <input type="hidden" name="_method" value="<%= action %>">
+  <% end %>
+
+  <%= auth_token %>
+
+  <table>
+    <tbody>
+      <tr>
+        <label>
+          <td>Name:</td>
+          <td>
+            <input type="text" name="cat[name]" value="<%= cat.name %>">
+          </td>
+        </label>
+      </tr>
+
+      <tr>
+        <label>
+          <td>Sex:</td>
+          <td>
+            <% ["M", "F"].each do |gender| %>
+
+              <span> <%= gender %>
+                <input type="radio" name="cat[sex]" value="<%= gender %>" checked="<%= gender == cat.sex %>">
+              </span>
+
+            <% end %>
+          </td>
+        </label>
+      </tr>
+
+      <tr>
+        <label>
+          <td>Color:</td>
+          <td>
+            <select name="cat[color]" value="<%= cat.color %>">
+              <option value="--select a color--" default></option>
+              <% @colors.each do |color| %>
+                <option value="<%= color %>" selected="<%= cat.color == color %>">
+                  <%= color %>
+                </option>
+              <% end %>
+            </select>
+          </td>
+        </label>
+      </tr>
+
+      <tr>
+        <label>
+          <td>Birth Date:</td>
+          <td>
+            <input type="date" name="cat[birth_date]" value="<%= cat.birth_date %>">
+          </td>
+        </label>
+      </tr>
+
+      <tr>
+        <label>
+          <td>Description:</td>
+          <td>
+            <textarea name="cat[description]" cols="20" rows="3"><%= cat.description %></textarea>
+          </td>
+        </label>
+      </tr>
+
+      <tr>
+        <label>
+          <td>Url:</td>
+          <td>
+            <input type="text" name="cat[url]" value="<%= cat.url %>">
+          </td>
+        </label>
+      </tr>
+    </tbody>
+  </table>
+
+  <input type="submit" value="<%= verb %> Cat">
+</form>

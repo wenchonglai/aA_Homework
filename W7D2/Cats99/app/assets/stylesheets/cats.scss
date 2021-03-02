@@ -1,0 +1,47 @@
+// Place all the styles related to the Cats controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+h2 {
+  padding: 8px 0;
+}
+
+input, select, textarea {
+  width: 200px;
+}
+
+.body ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.cat_info {
+  margin-right: 12px;
+  color: #c6c6c6;
+  width: 200px;
+  text-transform: capitalize;
+  margin-bottom: 24px;
+}
+
+.cat_info img {
+  width: 200px;
+  height: 200px;
+}
+
+.cat_info td {
+  min-width: 72px;
+}
+
+.cat_info .cat_name a {
+  font-size: 16px;
+}
+
+.cat_info .cat_name a:hover {
+  color: #f90;
+}
+
+
+input[type="radio"]{
+  width: auto;
+}

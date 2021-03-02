@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      /* Email styles need to be inline */
+      body {
+        background: #000;
+        color: #fff;
+        padding: 16px;
+      }
+
+      section {
+        margin: auto;
+      }
+
+      header {
+        text-align: center;
+        font-size: 32px;
+        line-height: 32px;
+        font-weight: 600;
+      }
+
+      header h1 span{
+        color: #000;
+        background: #F90;
+        padding: 8px 4px;
+      }
+
+      section.body {
+        text-align: left;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section>
+      <header>
+        <h1>Purr<span>hub</span></h1>
+      </header>
+      <section class='body'>
+        <%= yield %>
+      </section>
+    </section>
+  </body>
+</html>

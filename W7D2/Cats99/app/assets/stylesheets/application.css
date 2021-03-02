@@ -1,0 +1,203 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+body{
+  color: white;
+  background-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  padding: 24px 0 0 0;
+  margin: 0px;
+  display: relative;
+  font-weight: 300;
+}
+
+input, select, option, textarea, button{
+  font-size: 12px;
+  cursor: pointer;
+}
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-weight: inherit;
+}
+
+ul li, ol li {
+  list-style: none;
+}
+
+a, a:hover, a:visited {
+  text-decoration: none;
+  color: white;
+}
+
+a, button {
+  cursor: pointer;
+}
+
+.header {
+  background-color: #1b1b1b;
+  border-bottom: 1px solid #242424;
+}
+
+.header:last-child{
+  border: none
+}
+
+.header > section{
+  width: 1320px;
+  margin: auto;
+  display: flex;
+}
+
+header.header > section{
+  padding: 8px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left{
+  display: flex;
+  align-items: center;
+}
+
+header.header h1 {
+  font-size: 30px;
+  min-width: 200px;
+  font-weight: 600;
+  text-align: center;
+}
+
+header.header h1 span {
+  color: black;
+  background-color: #f90;
+  padding: 4px;
+  margin: 4px;
+  border-radius: 4px;
+  line-height: 48px;
+}
+
+header.header form{
+  display: flex;
+}
+
+header.header form input, header.header form button{
+  height: 26px;
+  line-height: 26px;
+  border: none;
+}
+
+header .header-left form input{
+  min-width: 480px;
+  padding: 0 8px;
+  color: #cacaca;
+  background-color: #363636;
+  border-radius: 4px 0 0 4px;
+}
+
+header.header form button{
+  background-color: #f90;
+  padding: 0 12px;
+  border: none;
+  border-radius: 0 4px 4px 0;
+}
+
+header.header form button:hover{
+  background-color: #ffa31a;
+}
+
+header.header form input:focus, header.header form button:focus {
+  outline: none;
+  
+}
+
+nav.header > section > ul{
+  display: flex;
+  justify-content: space-between;
+}
+
+nav.header > section  li > a{
+  display: inline-block;
+  min-width: 200px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  height: 40px;
+  line-height: 40px;
+  justify-content: space-between;
+}
+
+nav.header > section  li > a:hover{
+  background: #191919;
+  border-left: 1px solid #252525;
+  border-right: 1px solid #252525;
+}
+
+a.button.upload {
+  background-color: #2f2f2f;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 12px;
+  margin-left: 12px;
+  border-radius: 4px;
+}
+
+a.button.upload:hover {
+  background-color: #3f3f3f;
+}
+
+.sign-auth {
+  display: flex;
+}
+
+.sign-auth .welcome {
+  text-align: center;
+  padding: 0 12px;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.sign-auth .welcome span {
+  color: #f90;
+}
+
+.sign-auth a, .sign-auth input {
+  padding: 0 8px;
+  color: #ccc;
+  background: none;
+  width: auto;
+}
+
+.sign-auth a:hover, .sign-auth input:hover {
+  color: #fff;
+}
+
+
+.body {
+  width: 1320px;
+  margin: auto;
+  padding: 16px;
+}
+
+.footer {
+  margin: auto;
+  padding: 16px;
+  text-align: center;
+  background-color: #151515;
+  border-top: 1px solid #292929;
+}

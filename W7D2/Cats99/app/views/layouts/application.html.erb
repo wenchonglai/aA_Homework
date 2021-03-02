@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cats99</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%# javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    
+    <header class='header'>
+      <section>
+        <div class='header-left'>
+          <a href="<%= cats_url %>"><h1>Purr<span>hub</span></h1></a>
+          <form action="" method="POST">
+            <input type="text" placeholder="Search <%= @cat_count %> cats...">
+            <button>Search</button>
+          </form>
+          <a href="<%= new_cat_url %>" class='button upload'>Upload</a>
+        </div>
+        <div class='header-right'>
+          <div class='sign-auth'>
+            <% unless current_user %>
+              <a href="<%= new_session_url %>">Log In</a>
+              <a href="<%= new_user_url %>">Sign Up</a>
+            <% else %>
+              <div class="welcome">
+                Welcome
+                <br/>
+                <span>
+                  <%= current_user.username %>
+                </span>
+              </div>
+              <form action="<%= session_url %>" method="post">
+                <input type="hidden" name="_method" value="delete">
+                <%= auth_token %>
+                <input type="submit" value="Sign Out">
+              </form>
+            <% end %>
+            
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <nav class='header'>
+      <section>
+        <ul>
+          <li>
+            <a href="<%= cats_url %>">Home</a>
+          </li>
+          <li>
+            <a href="">Purr Inventory</a>
+          </li>
+          <li>
+            <a href="#">Categories</a>
+          </li>
+        </ul>
+      </section>
+    </nav>
+
+    <section class='body'>
+      <%= yield %>
+    </section>
+  </body>
+
+  <footer class='footer'>
+    <%= yield :footer %>
+  </footer>
+</html>
