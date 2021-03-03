@@ -1,0 +1,24 @@
+// Place all the styles related to the bands controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.band_inventory{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.band_info{
+  margin: 20px;
+}
+
+.band_info img{
+  width: 200px;
+  height: 200px;
+}
+
+.band_options{
+  display: flex;
+  min-width: 400px;
+  justify-content: space-evenly;
+}

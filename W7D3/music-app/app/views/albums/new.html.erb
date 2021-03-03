@@ -1,0 +1,16 @@
+<%= to_button(
+  albums_url, :post, "Create Album".to_russian,
+  children: [
+    to_input(type: :text, name: "album[title]", placeholder: "Album Title", class_name: "clickable"),
+    to_select(
+      *Band.all.map{|band| to_option( band.name, value: band.id) },
+      name: "album[band_id]"
+    ),
+    to_div(
+      to_label("Live",to_input(type: :radio, name: "album[:is_live]", value: true),  for: "album[:is_live]"),
+      to_label("Studio",to_input(type: :radio, name: "album[:is_live]", value: false),  for: "album[:is_live]"),
+      class_name: "radio"
+    ),
+    to_input(type: :text, name: "album[year]", placeholder: "Year", class_name: "clickable"),
+  ]
+) %>

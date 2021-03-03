@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MusicApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <header>
+      <section class="left">
+        <a href=<%= root_url %>>
+          <h1>
+            <%= "Music App".to_russian %> 
+          </h1>
+        </a>
+      </section>
+
+      <section class="right">
+        <% if curr_user %>
+          <section class="current_user">
+            <%= "Welcome back, Comerade #{curr_user.email}".to_russian %>
+            <%= form_delete(session_url, 'Log Out'.to_russian) %>
+          </section>
+        <% else %>
+          <section>
+            <a class="clickable" href="<%= new_session_url %>"><%= "Log In".to_russian %></a>
+            <a class="clickable" href="<%= new_user_url %>"><%= "Sign Up".to_russian %></a>
+          </section>
+        <% end %>
+      </section>
+    </header>
+    
+    <section class="errors">
+      <ul>
+        <% flash.now[:errors].to_a.each do |error| %>
+          <li>
+            <%= error.to_russian %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="body">
+      <%= yield %>
+    </section>
+  </body>
+</html>
+

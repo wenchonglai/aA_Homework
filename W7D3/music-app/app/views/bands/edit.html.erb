@@ -1,0 +1,6 @@
+<%= to_button(
+  band_url(@band.id), :patch, "Update".to_russian, children: [
+    to_input(type: "text", name: "band[name]", value: @band.name),
+    to_input(type: "text", name: "band[image_url]",  value: @band.image_url)
+  ]
+) %>

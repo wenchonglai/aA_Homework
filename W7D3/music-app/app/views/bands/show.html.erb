@@ -1,0 +1,8 @@
+<%= render "./partials/band_form", band: @band %>
+
+<div class="band_options">
+  <%= to_button new_band_album_url(@band.id), :get, "New Album".to_russian %>
+  <%= to_button edit_band_url(@band.id), :get, "Edit Band".to_russian %>
+  <%= to_button band_url(@band.id), :delete, "Destroy Band".to_russian %>
+  <%= to_button bands_url, :get, "All Bands".to_russian %>
+</div>

@@ -1,0 +1,24 @@
+<% if action == :signup %>
+  <% url = users_url %>
+  <% prime_key = 'user' %>
+<% else %>
+  <% url = session_url %>
+  <% prime_key = 'session' %>
+<% end %>
+
+<form action="<%= url %>" method="post">
+  <% if action == :logout %>
+    <input type="hidden" name="_method" value="delete">
+  <% end %>
+  
+  <%= form_auth %>
+
+  <label>
+    <input class="clickable" type="text" name="<%= prime_key %>[email]" placeholder="<%="enter email".to_russian%>">
+  </label>
+  <label>
+    <input class="clickable" type="password" name="<%= prime_key %>[password]" placeholder="<%="enter password".to_russian%>">
+  </label>
+
+  <input class="clickable" type="submit" value="<%= "Submit".to_russian %>">
+</form>

@@ -1,0 +1,4 @@
+<ul class="band_info">
+  <%= to_li( to_a( to_img(src: band.image_url, alt: "Band Photo"), href: band_url(band.id) ) ) %>
+  <%= to_li( to_a(band.name.to_russian, href: band_url(band.id)) ) %>
+</ul>

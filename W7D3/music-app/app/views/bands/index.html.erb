@@ -1,0 +1,8 @@
+<%= to_h1 "All Bands".to_russian%>
+
+<%= to_ul(
+  *@bands.map {|band| to_li(render("./partials/band_form", band: band))},
+  class_name: "band_inventory"
+) %>
+
+<%= to_button(new_band_url, :get, "New Band".to_russian) %>
