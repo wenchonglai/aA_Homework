@@ -155,10 +155,10 @@
   - sets up BOTH model file and the migration file
 
 ---
-## Validations vs. constraints
+## Validations
+### Validations vs. Constraints
 - **BOTH are necessary**
 - comparisons
-
   || ***Validations*** | ***Constraints*** |
   |---| --- | --- |
   |Definition| in ***models*** | in ***migrations*** |
@@ -168,7 +168,7 @@
   |unique values|`uniqueness: true`|`unique: true`|
   ||best used to provide error msgs to users interacting with the app|last line of defence|
 
-## Validation
+### Validation
 - annotating models
   - `bundle exec annotate --models`
 - `#valid`
@@ -178,13 +178,34 @@
   - `instance.errors` - shows all active errors pertaining to that instance
 - syntax
   ```ruby
-  class A < ApplicationRecord
-    validates :col_name_1, :col_name_2, ..., 
-      { validator_1: val, validator_2: val, ... }
-  end
+  validates(:col_name_1, :col_name_2, ... {
+    validator_1: val,       
+    validator_2: {            #option hash
+      message: "...",         #saves message to error if validtion fails
+      allow_nil: true/false,  #skips validation if value being validated is nil
+      allow_blank:            #skips validation if value being validated is blank
+
+      #option for uniqueness
+      scope: :col_name, 
+
+      #options for length
+      minimum: n1,      
+      maximum: n2,
+
+      #option for inclusion
+      in: [val_1, val_2, ...],
+
+      #options for numericality
+      greater_than: n1,
+      greater_than_or_equal_to: n2,
+      less_than: n3,
+      less_than_or_equal_to: n4
+    }
+  })
   ```
 
 ### Built-in Validators
+- _https://guides.rubyonrails.org/v4.0.0/active_record_validations.html#common-validation-options_
 - `presence`
   - calls `#blank?` to validate the specified attributes are not empty
 - `uniqueness`
@@ -238,10 +259,6 @@
       validates: :column_name, column_name: true
     end
     ```
-
-### Validation Options
-- `:allow_nil`
-- `:allow`
 ---
 ## Associations
 - Connections between two ActiveRecord models

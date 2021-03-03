@@ -109,26 +109,32 @@
   - Rails will save the `session` contents in the cookie when `render` or `redirect` is called 
 - remove a session: `session[:session_token] = nil`
 
-### Rails `ApplicationController::Base#Flash` method
-- ***Flash*** - A special session that stores data only for the current request and the next request
+---
+## Errors with `flash` and `flash.now`
+- similar to `session` - a hash-like object
+- meant for temporary cookies
+  - will mostly be used to manage errors to be displayed to the user
+  - can also be used for any one-time message to be displayed to the user
 - `#flash` vs. `#flash.now`
   | |`#flash`|`#flash.now`|
   |-|-|-|
   |lifetime|current & next requests|current request ONLY|
   |used for|`redirect`|`render`|
   |syntax|`flash[:user_error] = "error_message"`|`flash.new[:user_error] = "error_message"`|
-- The low-level invocation of `ActionController::Base#cookies` method
-  - gets/sets data to an HTTP cookie directly
-  - ```ruby
-    cookies[:session_token] = {
-      value: session_token,
-      expires: 20.year.from_now #20 max; defaults to be cleared after browser closes
-    }
-    # is equivalent to:
-    cookies.permanent[session_token] = session_token
-    ```
-  - **[caveat] always use `session`; avoid using `cookies`**
-  - **[caveat] a cookie's value has to be a string. (de-)/serielization will be needed**
+- `flash` includes everything in both `flash` and `flash.now`
+---
+## low-level invocation of cookies
+- `ActionController::Base#cookies` - gets/sets data to an HTTP cookie directly
+  ```ruby
+  cookies[:session_token] = {
+    value: session_token,
+    expires: 20.year.from_now #20 max; defaults to be cleared after browser closes
+  }
+  # is equivalent to:
+  cookies.permanent[session_token] = session_token
+  ```
+- **[caveat] always use `session`; avoid using `cookies`**
+- **[caveat] a cookie's value has to be a string. (de-)/serielization will be needed**
 ---
 ## Auth Pattern
 - **[caveat] NEVER write your own authentication**
@@ -158,8 +164,12 @@
 ---
 ## CSRF and Forms
 - ***CSRF - Cross-site Request Forgery***
+  - when a request is made to a website other than the one the user is currently on (hence *cross-site*)
   - use a deceptive form to complete certain request methods towards another website
+  - forces user to execute unwanted actions on this other site (i.e. liking a facebook page)
+ 
 - Prevention
+  - Enable CSRF protection in rails and adding `form_authenticity_token` to forms
   - Rail by default sets an ***authenticity token*** in the session for each request
   - Rail expects the client to **upload the *authenticity token* in the params** when making any non-GET request
   - the `form_authenticity_token` helper takes the ***authenticity token*** stored in the user session, puts it in the form, and check if the param token equals the session token once the form is submitted
@@ -175,6 +185,12 @@
   - By default, Rails will raise `ActionController::InvalidAuthenticityToken` **exception**
   - optionally, this can be changed in **`application_controller.rb`** to set to `:null_session`
     - this way, no error will be raised but Rails will blank out the session and log out the user
+- to turn ***CSRF protection*** off, add: 
+  ```ruby
+  #application controller.rb
+  skip_before_action :verify_authenticity_token
+  ```
+  - **[caveat] should only do this temporarily when testing in Postman!**
 ---
 ## User Sign Up, Log In, & Log Out
 ### schema
