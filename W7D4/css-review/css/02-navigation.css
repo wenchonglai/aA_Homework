@@ -1,0 +1,30 @@
+/* PHASE 2: Navigation */
+
+.header-logo {
+  font-weight: 700;
+  float: left;
+  border-right: 1px solid #ccc;
+}
+
+.header-logo:hover, .header-list > li:hover  {
+  background: black;
+}
+
+.header-list {
+  float: right;
+}
+
+.header-list > li {
+  display: inline-block;
+  border-left: 1px solid #ccc;
+  margin: none;
+  list-style: none;
+  float: left;
+}
+
+
+.group::after{
+  float: none;
+  width: 100%;
+  display: block;
+}
