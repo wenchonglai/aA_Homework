@@ -6,31 +6,17 @@
 ---
 ## Setup Rails Testing
 - Useful Gems
+
   - development & test
     - `pry-rails`
     - `rspec-rails`
-      - Configuration
-        - **`rails g rspec:install`**
-        - automatically generate test files
-        - ```ruby
-          #.config/application.rb
-          config.generators do |g|
-            g.test_framework :respec,
-              :fixtures => false,
-              :view_spes => false,
-              :helper_specs => false,
-              :routing_specs => false,
-              :controller_specs => true, # auto-generate spec file when generating a controller
-              :request_specs => false
-
-            g.fixture_replacement :factory_bot, :dir => "spec/factories" #easier fixture replacement and automatic creation of instances
-          end
-          ```
     - `factory_bot_rails` - automatic generation of model instances
     - `rails-controller-testing`
+      - enhanced testing for controller methods
     - `spring`
       - rails application pre-loader; speeds up dev by keeping the app running in the background
   - test
+    - `chromedriver-helper` - replace with `webdrivers` if desired
     - `faker` - generate random data
     - `capyabara` - test views & features within the application
         - need to manually create `./spec/features` for Capybara helper methods
@@ -39,20 +25,52 @@
     - `guard-rspec`
       - monitors the specified change of files
     - `shoulda-matchers` - allows for one-liner tests for validations and associations
-      - configuration
-        ```ruby
-        #rails_helper.rb
-        require 'shoulda/matchers' #IMPORTANT!
+    - `launchy`
+      - launch external applications from within the Rails app
+      - enables save_and_open_page
+- set up the test database
+  - **`rails db:create`**
+  - **`rails db:test:load`**
+  - **`database.yml`**
+    - configure the test database
+- install rspec
+  - **`rails g rspec:install`**
+    - automatically generate test files
+    - .rspec, spec/, spec_helper.rb, rails_helper.rb
+    - add configs to `.rspec` 
+      - `--require spec_helper` - default
+      - `--color`
+      - `--format documentation`
+- auto generate test files
+  - change the `config/application.rb` file to use rspec
+  ```ruby
+  #.config/application.rb
+  config.generators do |g|
+    g.test_framework :respec, #specify that tests should be run using rspec
+      :fixtures => false,
+      :view_spes => false,
+      :helper_specs => false,
+      :routing_specs => false,
+      :controller_specs => true, # auto-generate spec file when generating a controller
+      :request_specs => false
 
-        Shoulda::Matchers.configure do |config|
-          config.integrate do |with|
-            with.test_framework :rspec
-            with.library :rails
-          end
-        end
-        ```
-        - **[caveat] Remember to `require 'shoulda/matchers'`!!!**
-    - `launchy` - launch external applications from within the Rails app
+    #easier fixture replacement and automatic creation of instances
+    g.fixture_replacement :factory_bot, :dir => "spec/factories" 
+  end
+  ```
+- configure shoulda matchers
+  ```ruby
+  #rails_helper.rb
+  require 'shoulda/matchers' #IMPORTANT!
+
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
+  ```
+  - **[caveat] Remember to `require 'shoulda/matchers'`!!!**
 ---
 ## Testing Models with Rspec
 - model testing is ***unit testing***
@@ -81,7 +99,7 @@
     - `have_many(:assoc_method)`
     - `have_one(:assoc_method)`
     - `have_many(:source_method).through(:through_method)`
-  - methods
+  - Class **AND** instance methods *not private*
   - error messages
     ```ruby
     table_noun.valid?
@@ -92,7 +110,8 @@
 ### Factory Bot & Faker
 - Purpose: to auto-create instances for testing
 - location: './spec/factories'
-- ```ruby
+- Setup factory bot
+  ```ruby
   FactoryBot.define do
     factory :table_noun do
       col_name_1 { Faker::xxx.xxx }
@@ -173,7 +192,7 @@
   ```ruby
   feature "capybara features", type: feature do
     feature "doing something" do
-      before (:each) do
+      background (:each) do
         visit "route"
       end
 

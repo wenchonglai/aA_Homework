@@ -37,7 +37,6 @@ describe User do
 
   describe "::find_with_password" do
     before {user.save!}
-    
     context "correct email and password given" do
       it "should return the correct user instance" do
         expect(User.find_with_password({email: "abc@def.com", password: "123456"})).to eq(user)
