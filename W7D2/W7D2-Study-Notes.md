@@ -64,6 +64,7 @@
 - purpose: to hold view-specific code that DRYs up templates
 - common view helpers
   - `link_to`
+  - `button_to`
   - `form_for` (for building forms)
   - `javascript_include_tag` (for including assets)
 - location of user-defined helpers
@@ -84,9 +85,10 @@
 
 ### Escaping HTML
 - **[caveat] HTML strings that print into an erb will be escaped**
-  - purpose: to prevent ***HTML injection***
+  - `h(text)`
+  - purpose: if not escaped, html texts could cause ***HTML injection***
 - `String#html_safe` - a method that Rails monkey-patched to the String class to bypass escaping
-  - alias: `h(text)`
+  - [caveat] ALWAYS use `h(text)` along with `#html_safe` to avoid user input causing ***html injection***
 
 ### Capturing a block in erb
   - `capture(&block)`
