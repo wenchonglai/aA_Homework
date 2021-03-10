@@ -32,7 +32,7 @@
     }
   }
   ```
-- ***hoising***
+- ***hoisting***
   - `var` and `function` allow for hoisting
     ```js
     console.log(a);   // undefined
