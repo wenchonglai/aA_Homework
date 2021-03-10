@@ -40,7 +40,7 @@
   |scope|global|function|curlies|curlies|the outer function scope|
   |redeclaration|yes|yes|yes(Chrome)/no|no|yes|
   |reassignment|yes|yes|yes|no|-|
-  |*hoisting*|no|yes|no|no|yes|
+  |assessible before declaration|no|yes|no|no|yes|
 - all variables declared in an outer scope is accessible from any of its inner scopes 
 - [caveat] it will throw an error while accessing undefined variables
 - [caveat] it will throw an error while redeclaring the same variable through `let` in the default JS environmen
