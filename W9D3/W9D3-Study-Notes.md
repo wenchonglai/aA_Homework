@@ -106,4 +106,15 @@
     ```
   - `$.prototype.data(dataName)` retrieves the data value assigned to the `data-dataName` attribute
 
-## Event Delegation
+## ***Event Delegation***
+- installing a single event handler on a parent to catch events on its children
+- native `event.target` vs. `event.currentTarget`
+  - `target is the element that directly receives the event`
+  - `currentTarget is the element that has the event listener`
+- jQuery event delegation
+  ```js
+  $('tag_1').on('eventname', 'tag_2', e => {})
+  ```
+  - `e.target` points to the element directly receiving the event
+  - `e.currentTargget` now points to `tag_2`
+  - `e.delegateTarget` is `tag_1`
