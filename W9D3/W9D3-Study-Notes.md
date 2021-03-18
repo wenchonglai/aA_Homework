@@ -1,8 +1,15 @@
 # DOM - ***Document Object Model***
-- An API for accessing the HTML content
+- [DEFINITION] An ***API*** for***accessing** the **HTML content**
+  - **tree-like** structure
+    - each node represents an element of the document
 - standardized by ***World Wide Web Consortium (W3C)***
 - supported by all major browsers
   - *with slight variations*
+
+### layers of the frontend
+  - JavaScript - behavioral
+  - CSS - presentational
+  - HTML - structural
 
 ### Accessing HTML Elements
 - `document.getElementById(id)`
@@ -23,14 +30,39 @@
 ---
 
 # jQuery
+- Javascript ***wrapper-library*** used for low-level DOM manipulation
+- universally supported by all browsers
+- everything in jQuery can be done with plain Javascript (aka. ***Vanilla*** Javascript)
 - the jQuery library exports two global variables - `$` and `jQuery`; `jQuery === $`
+- ways to use jQuery
+  ||Wrapper-style|Selector-style|HTML-style|Ready-style|
+  |-|-|-|-|-|
+  |input|unwrapped HTML element or array of several elements|CSS selector string|HTML string|function to fun when DOM is fully loaded|
+  |output|jQuery object wrapping those elements|jQuery object containing all elements that match the selector|jQuery object containing the top elements from the HTML string|
+  |example|`$(canvas)`|`$('li#a.b[c="d"]:nth-child')`|`$('<li a="b">sth</li>')`|`$(() => {})`|
+### Downloading jQuery
+- `<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>`
+
+## Common jQuery Methods
+- `hide` / `show`
+- `text`
+- `addClass`
+- `attr` / `data` / `val` / `css`
+  - getter and setter
+  - `data` is a specific attribute that returns the `data-data-name` attributes
+    - to acquire `data-data-name`, use `$...data(dataName)`
+  - `val` is a specific attribute that returns the `value` attribute
+    - [CAVEAT] the `value` attribute cannot be accessed through `attr`!!1
+  - `css` is a specific attribute that returns the style attribute
+- `append` / `remove`
+- `on(event, handler)`
 
 ## Selection & Manipulation
 
 ## Selection
 - `$('css selector string')`
   - similar to `document.querySelectorAll('css selector string')`
-  - returns a ***jQuery object***
+  - returns a ***jQuery object*** (akin to `ActiveRecord#select` returns an `ActiveRecord::Relation` instead of an `Array`)
     - a ***jQuery object*** is fundamentally an array of ***HTMLElements***
 
 ### Explicit and Implicit Iteration
@@ -64,6 +96,9 @@
 - `$.prototype.parent`, `$.prototype.children`, `$.prototype.siblings`
 
 ## Events
+- describes most interactions users can have with an app (clicking, submitting, typing)
+  - an object containing information about the action that just happened
+- to respond to events, event listeners must be installed on HTML elements (through `on` in jQuery)
 - `$.prototype.on(eventName, callback)`
 - stop listening:
   `$.prototype.off(eventName, callback)`
@@ -109,8 +144,8 @@
 ## ***Event Delegation***
 - installing a single event handler on a parent to catch events on its children
 - native `event.target` vs. `event.currentTarget`
-  - `target is the element that directly receives the event`
-  - `currentTarget is the element that has the event listener`
+  - `target` is the element that event **directly occurred on**
+  - `currentTarget` is the element where the event listener is **attached to**
 - jQuery event delegation
   ```js
   $('tag_1').on('eventname', 'tag_2', e => {})

@@ -1,5 +1,50 @@
+- the context of an unbound funciton depends on **how the function is called**
+  |style|how to invoke|`this`|
+  |-|-|-|
+  |function|`func()`|window/global|
+  |method|object.func()|object|
+  |constructor|new func()|object being created|
+  |call|func.call(context, ...args)|context|
+  |apply|func.apply(context, args)|context|
+  - callback are always invoked in function-style
+    - the context with a callback will be set to the `window` or `global`
+    - need to `bind` the context if `this` is used within the callback
+## currying
+- [DEFINITION] a functional programming techique
+  - that translates the evaluation of a function that **takes multiple arguments** into evaluating **a sequence of functions**, each with **a single argument**
+- example
+  ```js
+  function _add3Nums(n1, n2, n3){ return num1 + num2 + num3;}
+
+  // curried version
+  function add3Nums(n1){
+    return function(n2){
+      return function(n3){
+        return n1 + n2 + n3;
+      }
+    }
+  }
+  ```
+- currying is useful when the **arguments** used by a function are **not all available at the same time**
+- ```js
+  function continuousAdd(){
+    const args = [];
+
+    return function _curriedAdd(num){
+      args.push(num);
+      console.log(args.reduce(acc, el) => {
+        return acc + el;
+      });
+
+      return _curriedAdd;
+    }
+  }
+  ```
+
 ## JS ***Prototypical Inheritance***
+- [DEFINITION] ***inheritance*** - one object gets **access** to the **properties and functions defined on another object**
 - JS implements inheritance through ***prototype chain***.
+  - ruby uses classical inheritane
 - When calling a property on an object, the JS interpreter:
   1.  looks for the property in the object itself
   2.  looks for the property in the object's prototype
@@ -9,31 +54,80 @@
       ...
   -   stops when the prototype is `Object.prototype`; `Object.prototype.__proto__ === null`
       - `Object` is the ***top level class*** in JS
-- ways of implementing inheritance
-  1.  **[CAVEAT] bad practice!**
-      `SubClassName.prototype.__proto__ = ClassName.prototype`
-      - Not supported across browsers
-      - Leads to poor performance
-  2.  **[CAVEAT] bad practice!**
-      `Object.setPrototypeOf`
-      - Also leads to poor performance**
-  3.  Use `Object.create` - **Recommended**
-      - returns an entirely new object with `__proto__` set to the argument passed to `object.create`
-      ```js
-      SubclassName.prototype = Object.create(ClassName.prototype)
-      ```
-  4.  Surrogate (old)
-      ```js
-      function ClassName(){}
-      function SubClassName(){}
-      function Surrogate(){}
+### ***Constructor*** and ***Prototype*** - two key players in JS inheritance
+  - ***constructor*** is a function, **handles initialization logic** and **specifies properties for each instance**
+  - ***prototype*** is an object that defines the **shared behavior and properties** for all instances of a class 
+    - The `prototype` is a property on a constructor function; `__proto__` is a property on objects used to link an instance to its prototype
+    ```js
+    Cat.prototype === (new Cat()).__proto__ === {constructor: Cat}
+    ```
+    - every object is associated with a prototype object
+      - the only exception: `Object.prototype.__proto__ == null`
+        - because `Object` is at the top of the prototype chain
+      - the prototype object can be accessed through `__proto__`
+        - [CAVEAT] `Object.getPrototypeOf(obj)` **is preferred**
+    - if an object does not have a property, JS looks at its prototype through `__proto__` and keeps looking up its prototype chain
+### constructor functions
+- special type of function meant to create an object
+- made to be used with the `new` keyword
+  - constructs a new object
+  - assigns the `__proto__` of the new object to `Constructor.prototype`
+  - makes `this` point to the newly created object
+  - calls the constructor function in the context of that new object
+  - automatically returns the newly created object
 
-      Surrogate.prototype = ClassName.prototype();
-      SubClassName.prototype = new Surrogate();
-      SubClassName.prototype.constructor = SubClassName;
-      ```
-  5.  ES2015
-      - `class SubClassName extends ClassName {}`
+- accepts arguments to set the new object's properties
+- paired with a `prototype` object via `prototype` property
+(*functions are objects and can have properties as well*)
+- conventionally written with capital letter camelcase
+
+### ways of implementing inheritance
+1.  **[CAVEAT] bad practice!**
+    `SubClassName.prototype.__proto__ = ClassName.prototype`
+    - Not supported across browsers
+    - Leads to poor performance
+2.  **[CAVEAT] bad practice!**
+    `Object.setPrototypeOf`
+    - Also leads to poor performance**
+3.  Use `Object.create` - **Recommended**
+    - returns an entirely new object with `__proto__` set to the argument passed to `object.create`
+    ```js
+    SubclassName.prototype = Object.create(ClassName.prototype)
+    ```
+4.  Surrogate (old)
+    ```js
+    function ClassName(){}
+    function SubClassName(){}
+    function Surrogate(){}  // empty function
+
+    // because Surrogate is an empty function, Surrogate.prototype will not be modified by the constructor function
+    Surrogate.prototype = ClassName.prototype;
+
+    
+    SubClassName.prototype = new Surrogate();
+
+    // ensure the right constructor is called when instantiating
+    SubClassName.prototype.constructor = SubClassName;
+    ```
+    - [CAVEAT] - `Child.prototype.__proto__ == Parent.prototype` will **slow down the code**
+5.  ES2015
+    - `class SubClassName extends ClassName {}`
+
+### Super
+- in ES5:
+  ```js
+  function SubClassName(...args){
+    SuperClassName.call(this, ...args);
+  }
+  ```
+- in ES6:
+  ```js
+  class SubClassName extends SuperClassName{
+    constructor(...args){
+      super(...args);
+    }
+  }
+  ```
 ---
 ## Browser-side Javascript
 - importing modules

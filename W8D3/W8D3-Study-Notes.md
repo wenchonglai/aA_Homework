@@ -33,6 +33,9 @@
 ### Type conversion while using `==`
 - _https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness#loose_equality_using_
 
+### Scope vs Context
+- ***Scope***: availability of variables while running
+- ***Context***: object within which the function runs
 ### `var`, `let`, `const`, global, and `function`
 - Comparison
   ||implicit|`var`|`let`|`const`|`function`|
@@ -87,7 +90,8 @@
     ```
 ---
 ## Functions
-- a type of Object
+- ***functions are objects***
+  - returns the function object if not explicitly called with `()`
 - First-class object in JS:
   - can be passed as arguments
   - can be returned from other functions
@@ -104,9 +108,16 @@
     - similar to class definitions in Ruby
     - instance methods are added to the prototype of an object
 - invoking a function
-  - ***method style***
   - ***function style***
+    `func(arg1, arg2)`
+    - `this` refers to the outer context
+  - ***method style***
+    `obj.method(arg1, arg2)`
+    - `this` refers to:
+      - the object (if defined through `function`)
+      - the outer context (if defined through `=>`)
   - ***constructor style***
+    `new`
 ***callbacks***
 - a function that is passed as an argument
 - can be as simple as passing a function to `forEach`
@@ -115,6 +126,17 @@
 A function which accesses variables that were neither passed in nor defined inside that function scope
 - a function that captures free variables and 'closes' over them
 - can be used to create "private state"
+
+***async functions***
+- ```js
+  class ClassName{
+    constructor(){
+      // overrides this._methodName;
+      this._methodName = this._methodName.bind(this);
+    }
+    _methodName(){}
+  }
+  ```
 
 ### this
 - akin to Ruby's `self`
