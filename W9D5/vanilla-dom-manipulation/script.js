@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+dodocument.addEventListener("DOMContentLoaded", () => {
   // toggling restaurants
 
   const toggleLi = (e) => {
