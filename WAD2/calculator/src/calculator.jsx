@@ -1,19 +1,16 @@
-import React, { useRef } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState, useRef } from 'react'
 
 export default function Calculator(props){
-  let [currVal, setCurrVal] = React.useState(0);
-  let input1 = React.useRef(undefined);
-  let input2 = React.useRef(undefined);
+  let [currVal, setCurrVal] = useState(0);
+  let input1 = useRef(undefined);
+  let input2 = useRef(undefined);
   
   function handleClick(e){
     e.preventDefault();
 
     let formData = new FormData(e.currentTarget);
-
     let val1 = Number( formData.get('input1') ) || 0;
     let val2 = Number( formData.get('input2') ) || 0;
-
     
     switch (e.target.value){
       case '+': setCurrVal(val1 + val2); break;

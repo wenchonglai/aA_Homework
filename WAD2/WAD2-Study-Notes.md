@@ -1,8 +1,13 @@
 # React
-- [DEFINITION] a JS **library** for creating **UI components**
-  - When the **data** *that is represented by the UI* changes, React **updates the UI**
+- [DEFINITION] a JS **front end library** for **building/managing UI components**
+  - **the V in MVC**
+  - When the **data** *that is represented by the UI* changes, React components **react** and **update** as needed
+  - breaks up view to **modular components**
   - [CAVEAT] Reat is **NOT** a front-end MVC framework!
+- abstracts away low-level DOM manipulation allowing developer to focus on how app should look and behave
 - use: **manage all UI updates** when any changes is made, **instead of manually updating** elements in response to user input
+- typically used with JSX - easily incorporate JS into HTML
+- Virtual DOM
 
 ### How it works
 - traditional JS apps: pieces of data changed must be identified and the DOM must be surgically updated
@@ -47,6 +52,8 @@
 ---
 ## JSX
 - [DEFINITION] - a ***JS syntax extension*** that **resembles HTML And XML**
+- **produces React elements** which can be **DOM elements** or **another React components**
+- [NOTE] **camelCase** naming convention
 - **syntactic sugar** for `React.createElement`
 - does **NOT** need to be used with React
 - syntax
@@ -73,11 +80,20 @@
 ### Interpolation
 - use `{}` to interpolate
 - [CAVEAT] **only single expressions allowed** in an interpolation! 
+  - **`;` is not allowed**
 ---
 ## React Component
 - **JS function that return HTML** to be rendered onto a document
-- the building blocks of a React view-layer
+  - encapsulates pieces of UI containing both HTML and the means to manipulte it
+- the **basic building blocks** of a React view-layer
+  - A React app is a hierarchy, or tree, of React components
 - typically written in JSX
+- ***Single Responsibility Principle***
+  - a React component should have only one responsibility
+- **React Components should be **pure functions** (with respect to props)**
+  1. with the same input, gives the same output
+  2. 0 side effects
+  3. does not mutate its input
 ---
 ## Using React with Node
 - package dependency
@@ -99,10 +115,11 @@
 
 ### Component Declaration
 - Two different ways of declaring a React component:
-  - Inheriting from `React.Component`
+  - ***Class component***: Inheriting from `React.Component`
+  - must have a `render` function
   ```js
   class TagName extends React.Component{
-    constructor(){ super();
+    constructor(props){ super(props);
       ...
     }
     componentDidMount(){...}
@@ -111,7 +128,8 @@
     }
   }
   ```
-  - Functional Components
+- ***Functional Component***
+  - the function is the `render` function
   ```js
   const TagName = (props) => {
     let [stateName, setStateName] = useState(initState);
@@ -121,28 +139,59 @@
     return (<...>...</...>);
   }
   ```
+- render
+  - React calls `render` for us
+  - typically returns React Elements written using JSX
+    - Can only return one root React element
+  - can also return null
+  - can also return booleans, arrays, strings, and numbers, but less common
 ---
 ## React ***Synthetic Events*** (aka. Event Handlers)
 - [DEFINITION] - **React equivalent to `addEventListener`**
+- [NOTE] React events have **camelCase** names
 - [NOTE] **most event handlers will call `preventDefault()`**
 - _https://reactjs.org/docs/events.html_
 ---
 ## Props & State
+React components will re-render when their state or props change
 ### Props
-- properties of a component passed in **at the time of initialization**
+- refer to properties of a component passed in **at the time of initialization** from a parent component or down to a child component
 - [CAVEAT] do not change the Props!
 ### State
-- the **mutable, internal **data of a component
+- refers to the **mutable** data that the ***component itself manages***
   - mostly used for **form** components to manage **controlled** inputs
-- `this.setState()` - resets a component's state
-  - triggers `render()` every time it is called
-- [CAVEAT] reassigning `this.state` using `this.state =` **will NOT trigger rerendering**
-- [CAVEAT] **`setState()` should NOT be called during `render`**
-- `this.state` may be upated **asynchronously**
-- takes an **optional callback** as a second argument
+- initializing state
+  ```js
+  class TagName extends React.Component{
+    constructor(props){ super(props);
+      this.state = {...}
+    }
+  }
+  ```
+- updating state
+  - `this.setState()` - resets a component's state
+    - triggers `render()` every time it is called
+    - [NOTE] `setState()` **merges** the new value into `this.state` instead of creating a new state object
+  - [CAVEAT] reassigning `this.state` using `this.state =` **will NOT trigger rerendering**
+  - [CAVEAT] **`setState()` should NOT be called during `render`**
+  - `this.state` may be upated **asynchronously**
+  - takes an **optional callback** as a second argument
 
 ## ***Component Lifecycle Methods***
 - [DEFINITION] functions that needs to be run at various points during a component's lifecycle
+- Procedures
+  1.  Mounting
+      1.  `constructor()`
+      2.  1st render
+      3.  `componentDidMount()`
+          - good place to call AJAX requests, set subscriptions like `setInterval`
+  2.  Updating
+      1.  new props / setState() / forceUpdate()
+      2.  rerender
+      3.  `componentDidUpdate()`
+  3.  Unmounting
+      1.  `componentWillUnmount()`
+          - remove event listeners, clearInterval, clean up work, etc.
 - common lifecycle methods
   - `componentDidMount`
   - `componentDidUpdate`
@@ -166,19 +215,29 @@
 - React Developer Tools Chrome Extension
   _https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en-US_
 ---
-# NPM - Node PAckage Manager
-- `package.json` - a ***manifest file*** that lists all JS dependencies of a project
-- `npm init --yes` - initialize a Node project
-- `npm install package_name` - install a package
-  - `--no-save` - do not save the package to `package.json`
-  - `--save-dev` - only save for the app's development environment
-- adding npm command line scripts 
-  ```json
-  "scripts": {
-    "script_name": "command line command"
-  }
-  ```
-  `npm run script_name` <==> `command line command`
+# NPM - ***Node Package Manager***
+- A ***package manager*** and ***software registry***
+- Use to download various ***dependencies***
+- `package.json` - a ***manifest file*** that lists all JS dependencies of a project 
+  - `"main": "..."`: the entry file for an npm package
+  - `"scripts": {}`
+  - `"keywords"`: help people search the package
+  - `"license"`: default: `"ISC"`
+- use
+  - `npm init --yes` - initialize a Node project
+  - `npm install package_name` - install a package
+    - `--no-save` - do not save the package to `package.json`
+    - `--save-dev` or `-D` - only save as the app's development dependency
+  - adding npm command line scripts 
+    ```json
+    "scripts": {
+      "script_name": "command line command"
+    }
+    ```
+    `npm run script_name` <==> `command line command`
+
+# Yarn
+- Yarn is similar to NPM
 
 ### Webpack
 - `.gitignore`
@@ -192,7 +251,8 @@
     bundle.js.map
     ```
   - _https://github.com/github/gitignore_
-- `webpack.config.js` - configuration file that sets up webpack options
+- `webpack.config.js` - configuration file that sets up webpack options. Do NOT reinvent the wheels every time!
+  - [CAVEAT]: **use a good template** or write a really good template and reuse
   - need to **create by hand**
     ```js
     var path = require('path');
@@ -200,13 +260,30 @@
     module.exports = {
       entry: "...", // the entry point of the source files
       output: {
+        // resolve the paths into an absolute path
         path: path.resolve(__dirname,  'folder_1_name', 'folder_2_name', ...),
         filename: "...", // output file name; typ. bundle.js
-        devtool: '...', // typ. a source map
-        resolve: {  // specify what file extentions to process
           extensions: ['.js', '.jsx', ..., '*']
         }
       }
+      
+      devtool: '...', // typically - "source-map"
+
+      module: {
+        rules: [{
+          test: ...,
+          exclude: ...,
+          loader: ...,
+          options: {
+            presets: [...]
+          }
+        }]
+      }
+
+      resolve: {
+        // allows for omitting file extensions while importing
+        extensions: [...]
+      }  
     }
     ```
   - for Rails projects, `bundle.js` should be located in **`app/assets/javascripts`**
