@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 
 import GiphysSearchContainer from './giphys_search_container';
 
-const Root = (store) => (
+export default (store) => (
   <Provider store={store}>
     <GiphysSearchContainer />
   </Provider>
-)
+);

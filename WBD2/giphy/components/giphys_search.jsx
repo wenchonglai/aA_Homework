@@ -14,13 +14,16 @@ export default (props) => {
   }
 
   return (
-    <form>
-      <input
-        type="text"
-        value={keywords.join(' ')}
-        onChange={handleChange}
-      />
-      <button onSubmit={handleSubmit}>Submit</button>
-    </form>
+    <div>
+      <GiphysIndex giphys={props.giphys} />
+      <form>
+        <input
+          type="text"
+          value={keywords.join(' ')}
+          onChange={handleChange}
+        />
+        <button onSubmit={handleSubmit}>Submit</button>
+      </form>
+    </div>
   )
 }
